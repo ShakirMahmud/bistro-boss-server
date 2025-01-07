@@ -5,7 +5,7 @@ require("dotenv").config();
 const { connectToDatabase } = require("./src/config/dbConnection");
 const menuRoutes = require("./src/routes/menuRoutes");
 const reviewRoutes = require("./src/routes/reviewRoutes");
-// const usersRoute = require("./src/routes/usersRoute");
+const usersRoute = require("./src/routes/usersRoute");
 const cartsRoutes = require("./src/routes/cartsRoutes");
 
 const app = express();
@@ -23,7 +23,7 @@ async function startServer() {
     // Routes
     app.use("/menu", menuRoutes);
     app.use("/reviews", reviewRoutes);
-    // app.use("/users", usersRoute);
+    app.use("/users", usersRoute);
     app.use("/carts", cartsRoutes);
 
     // Basic route
