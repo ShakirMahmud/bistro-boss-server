@@ -1,3 +1,4 @@
+const { ObjectId } = require("mongodb");
 const { getDatabase } = require("../config/dbConnection");
 
 const usersCollection = getDatabase().collection("users");
@@ -25,4 +26,41 @@ const postUsers = async (req, res) => {
   }
 };
 
-module.exports = { getAllUsers, postUsers };
+const deleteUser = async (req, res) => {
+  try {
+    const id = req.params.id;
+    const query = { _id: new ObjectId(id) };
+    const result = await usersCollection.deleteOne(query);
+    res.json(result);
+  } catch (error) {
+    res.status(500).json({ message: "Error deleting user", error });
+  }
+};
+
+// make a user as admin 
+const makeAdmin = async (req, res) => {
+  try {
+    const id = req.params.id;
+    const query = { _id: new ObjectId(id) };
+    const update = { $set: { role: "admin" } };
+    const result = await usersCollection.updateOne(query, update);
+    res.json(result);
+  } catch (error) {
+    res.status(500).json({ message: "Error making user admin", error });
+  }
+};
+
+// change the role of a admin to user
+const makeUser = async (req, res) => {
+  try {
+    const id = req.params.id;
+    const query = { _id: new ObjectId(id) };
+    const update = { $set: { role: "user" } };
+    const result = await usersCollection.updateOne(query, update);
+    res.json(result);
+  } catch (error) {
+    res.status(500).json({ message: "Error making user admin", error });
+  }
+};
+
+module.exports = { getAllUsers, postUsers, deleteUser, makeAdmin, makeUser };
