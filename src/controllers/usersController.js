@@ -1,7 +1,11 @@
 const { ObjectId } = require("mongodb");
 const { getDatabase } = require("../config/dbConnection");
 
+
 const usersCollection = getDatabase().collection("users");
+
+
+
 const getAllUsers = async (req, res) => {
   // console.log(req.headers);
   try {
@@ -82,4 +86,11 @@ const makeUser = async (req, res) => {
   }
 };
 
-module.exports = { getAllUsers, postUsers, deleteUser, makeAdmin, makeUser, getAdmins };
+module.exports = {
+  getAllUsers,
+  postUsers,
+  deleteUser,
+  makeAdmin,
+  makeUser,
+  getAdmins,
+};

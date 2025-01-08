@@ -1,4 +1,5 @@
 const jwt = require("jsonwebtoken");
+const { getDatabase } = require("../config/dbConnection");
 require("dotenv").config();
 
 const verifyToken = (req, res, next) => {
@@ -16,4 +17,19 @@ const verifyToken = (req, res, next) => {
   });
 };
 
-module.exports = { verifyToken };
+
+const usersCollection = getDatabase().collection("users");
+
+// verifyAdmin middleware
+const verifyAdmin = async (req, res, next) => {
+  const email = req.decoded.email;
+  const query = { email: email };
+  const user = await usersCollection.findOne(query);
+  if (user?.role === "admin") {
+    next();
+  } else {
+    res.status(403).json({ message: "Unauthorized" });
+  }
+};
+
+module.exports = { verifyToken, verifyAdmin };
