@@ -1,3 +1,4 @@
+const { ObjectId } = require('mongodb');
 const { getDatabase } = require('../config/dbConnection');
 const menuCollection = getDatabase().collection('menu');
 const getMenu = async (req, res) => {
@@ -12,7 +13,17 @@ const getMenu = async (req, res) => {
 const getMenuById = async (req, res) => {
   try {
     const id = req.params.id;
-    const query = { _id: id};
+    let query;
+    if (ObjectId.isValid(id)) {
+      query = { 
+        $or: [
+          { _id: new ObjectId(id) },   
+          { _id: id }
+        ]
+      };
+    } else {
+      query = { _id: id };
+    }
     const result = await menuCollection.findOne(query);
 
     if (!result) {
@@ -35,4 +46,47 @@ const postMenu = async (req, res) => {
   }
 };
 
-module.exports = { getMenu, getMenuById, postMenu };
+const updateMenu = async (req, res) => {
+  try {
+    const id = req.params.id;;
+    const data = req.body;
+    let query;
+    if (ObjectId.isValid(id)) {
+      query = { 
+        $or: [
+          { _id: new ObjectId(id) },   
+          { _id: id }
+        ]
+      };
+    } else {
+      query = { _id: id };
+    }
+    const result = await menuCollection.updateOne(query, { $set: data });
+    res.json(result);
+  } catch (error) {
+    res.status(500).json({ message: "Error updating menu item", error: error.message });
+  }
+};
+
+const deleteMenu = async (req, res) => {
+  try {
+    const id = req.params.id;
+    let query;
+    if (ObjectId.isValid(id)) {
+      query = { 
+        $or: [
+          { _id: new ObjectId(id) },   
+          { _id: id }
+        ]
+      };
+    } else {
+      query = { _id: id };
+    }
+    const result = await menuCollection.deleteOne(query);
+    res.json(result);
+  } catch (error) {
+    res.status(500).json({ message: "Error deleting menu item", error: error.message });
+  }
+};
+
+module.exports = { getMenu, getMenuById, postMenu, deleteMenu, updateMenu };
