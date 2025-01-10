@@ -1,4 +1,3 @@
-
 const { getDatabase } = require('../config/dbConnection');
 const menuCollection = getDatabase().collection('menu');
 const getMenu = async (req, res) => {
@@ -26,4 +25,14 @@ const getMenuById = async (req, res) => {
   }
 };
 
-module.exports = { getMenu, getMenuById };
+const postMenu = async (req, res) => {
+  try {
+    const data = req.body;
+    const result = await menuCollection.insertOne(data);
+    res.json(result);
+  } catch (error) {
+    res.status(500).json({ message: "Error creating menu item", error: error.message });
+  }
+};
+
+module.exports = { getMenu, getMenuById, postMenu };
