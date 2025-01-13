@@ -9,6 +9,7 @@ const usersRoute = require("./src/routes/usersRoute");
 const cartsRoutes = require("./src/routes/cartsRoutes");
 const authRoutes = require("./src/routes/authRoutes");
 const paymentRoutes = require("./src/routes/paymentRoutes");
+const adminStatsRoutes = require("./src/routes/adminStatsRoutes");
 
 const app = express();
 const port = process.env.PORT || 5000;
@@ -28,7 +29,8 @@ async function startServer() {
     app.use("/users", usersRoute);
     app.use("/carts", cartsRoutes);
     app.use("/jwt", authRoutes);
-    app.use("/payment", paymentRoutes);
+    app.use("/payments", paymentRoutes);
+    app.use("/adminStats", adminStatsRoutes);
 
     // Basic route
     app.get("/", (req, res) => {
